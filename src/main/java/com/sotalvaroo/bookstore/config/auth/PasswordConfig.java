@@ -1,4 +1,4 @@
-package com.sotalvaroo.bookstore.config;
+package com.sotalvaroo.bookstore.config.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
