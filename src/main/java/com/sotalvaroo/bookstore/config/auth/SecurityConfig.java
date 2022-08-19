@@ -9,28 +9,43 @@ import com.sotalvaroo.bookstore.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-/*@EnableGlobalMethodSecurity(prePostEnabled = true)*/
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder passwordEncoder;
     private final UserDetailServiceImpl userDetailService;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtFilter jwtFilter;
 
-    public SecurityConfig(PasswordEncoder passwordEncoder, UserDetailServiceImpl userDetailService) {
+    public SecurityConfig(PasswordEncoder passwordEncoder, UserDetailServiceImpl userDetailService, JwtAuthenticationEntryPoint unauthorizedHandler, JwtFilter jwtFilter) {
         this.passwordEncoder = passwordEncoder;
         this.userDetailService = userDetailService;
+        this.unauthorizedHandler = unauthorizedHandler;
+        this.jwtFilter = jwtFilter;
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder);
     }
 
 
@@ -40,50 +55,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                .and()
                 .csrf().disable()
+                .cors().disable()
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/h2-console" ).permitAll()
                 .antMatchers("/h2-console/**" ).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                //los login pasan por este filtro
+                .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class)
+
         ;
     }
 
-    /*@Override
-    @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails sotalvaroo = User.builder()
-                .username("sotalvaroo")
-                .password(passwordEncoder.encode("password"))
-                .roles("STUDENT")
-                .build();
 
-        return new InMemoryUserDetailsManager(sotalvaroo);
-    }*/
-
-    @Autowired
+/*    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .inMemoryAuthentication()
                 .withUser("user").password(passwordEncoder.encode("password")).roles("USER");
-    }
-
-    /*@Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder);
     }*/
 
-    /*    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return null;
-    }*/
+
 
 }
