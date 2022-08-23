@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserDetailServiceImpl implements UserDetailsService {
 
 

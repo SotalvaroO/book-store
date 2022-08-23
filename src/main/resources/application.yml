@@ -1,48 +1,52 @@
-
-spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-    throw-exception-if-no-handler-found: true
-  #    contentnegotiation:
-  #      favor-parameter: true
-  #      media-types:
-  #      #pdf: application/pdf
-  #        xlsx: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-  #  web:
-  #    resources:
-  #      add-mappings: false
-  h2:
-    console:
-      enabled: true
-  # ===============================
-  # DB
-  # ===============================
-  datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    #    url: jdbc:sqlserver://asd-asd.database.windows.net:1433;database=asd-app;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
-    #    url: jdbc:sqlserver://DESKTOP-T8R6POH\TESTINGDB:1433;databaseName=abachorros;encrypt=false;trustServerCertificate=true;
-    #    url: jdbc:mysql://localhost:3306/abachorros
-    driverClassName: org.h2.Driver
-    #    driverClassName: com.mysql.cj.jdbc.Driver
-    #    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    #    username: root
-    username: sa
-    #    password: root
-    password:
-
-  # ===============================
-  # JPA / HIBERNATE
-  # ===============================
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.H2Dialect
-    #    database-platform: org.hibernate.dialect.SQLServer2012Dialect
-    properties:
-      hibernate:
-        show_sql: true
-        use_sql_comments: false
-        format_sql: false
-    defer-datasource-initialization: true
+#
+#spring:
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#    throw-exception-if-no-handler-found: true
+#  #    contentnegotiation:
+#  #      favor-parameter: true
+#  #      media-types:
+#  #      #pdf: application/pdf
+#  #        xlsx: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+#  #  web:
+#  #    resources:
+#  #      add-mappings: false
+#  h2:
+#    console:
+#      enabled: true
+#  # ===============================
+#  # DB
+#  # ===============================
+#  datasource:
+##    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    #    url: jdbc:sqlserver://asd-asd.database.windows.net:1433;database=asd-app;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+#    #    url: jdbc:sqlserver://DESKTOP-T8R6POH\TESTINGDB:1433;databaseName=abachorros;encrypt=false;trustServerCertificate=true;
+#        url: jdbc:mysql://localhost:3306/book-store
+##    driverClassName: org.h2.Driver
+#    #    driverClassName: com.mysql.cj.jdbc.Driver
+#    #    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#        username: root
+##    username: sa
+#        password: root
+##    password:
+#
+#  # ===============================
+#  # JPA / HIBERNATE
+#  # ===============================
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+##    database-platform: org.hibernate.dialect.H2Dialect
+#    #    database-platform: org.hibernate.dialect.SQLServer2012Dialect
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        use_sql_comments: false
+#        format_sql: false
+#    defer-datasource-initialization: true
+#
+#jwt:
+#  secret: books
+#  expiration: 36000

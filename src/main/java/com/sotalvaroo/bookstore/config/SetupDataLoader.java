@@ -2,9 +2,11 @@ package com.sotalvaroo.bookstore.config;
 
 import com.sotalvaroo.bookstore.entities.Permission;
 import com.sotalvaroo.bookstore.entities.Role;
+import com.sotalvaroo.bookstore.entities.Store;
 import com.sotalvaroo.bookstore.entities.StoreUser;
 import com.sotalvaroo.bookstore.repository.IPermissionRepository;
 import com.sotalvaroo.bookstore.repository.IRoleRepository;
+import com.sotalvaroo.bookstore.repository.IStoreRepository;
 import com.sotalvaroo.bookstore.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -30,6 +32,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private IPermissionRepository permissionRepository;
 
     @Autowired
+    private IStoreRepository storeRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -48,10 +53,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         final List<Permission> adminPermissions = new ArrayList<>(Arrays.asList(readPrivilege, writePrivilege, passwordPrivilege));
         final List<Permission> userPrivileges = new ArrayList<>(Arrays.asList(readPrivilege, passwordPrivilege));
         final Role adminRole = createRoleIfNotFound("ROLE_ADMIN", new HashSet<>(adminPermissions));
-        createRoleIfNotFound("ROLE_USER", new HashSet<>(userPrivileges));
+        final Role userRole = createRoleIfNotFound("ROLE_USER", new HashSet<>(userPrivileges));
+
 
         // == create initial user
-        createUserIfNotFound("sotalvaroo", "Test", new HashSet<>(Arrays.asList(adminRole)));
+        StoreUser sotalvaroo = createUserIfNotFound("sotalvaroo", "Test", new HashSet<>(Arrays.asList(adminRole)));
+        createUserIfNotFound("cardacar", "Test", new HashSet<>(Arrays.asList(userRole)));
+
+        createStoreIfNotFound("dabeiba-shop",sotalvaroo);
 
         alreadySetup = true;
     }
@@ -64,6 +73,18 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             permission = permissionRepository.save(permission);
         }
         return permission;
+    }
+
+    @Transactional
+    Store createStoreIfNotFound(final String name,StoreUser user) {
+        Store store = storeRepository.findByName(name);
+        if (store == null) {
+            store = new Store();
+            store.setName(name);
+            store.setUser(user);
+            store = storeRepository.save(store);
+        }
+        return store;
     }
 
     @Transactional
