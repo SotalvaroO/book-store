@@ -81,7 +81,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         if (store == null) {
             store = new Store();
             store.setName(name);
-            store.setUser(user);
+            store.setOwner(user);
             store = storeRepository.save(store);
         }
         return store;

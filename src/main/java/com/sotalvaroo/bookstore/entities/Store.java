@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +21,10 @@ public class Store {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "user_id")
-    private StoreUser user;
+    private StoreUser owner;
+
+    @OneToMany
+    private List<StoreUser> workers;
 
     public Store() {
     }
